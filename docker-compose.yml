@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: board-db
+    environment:
+      POSTGRES_USER: board_user
+      POSTGRES_PASSWORD: board_password
+      POSTGRES_DB: board_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    container_name: board-backend
+    environment:
+      PORT: 4000
+      DB_HOST: db         # compose 서비스 이름 = 호스트 이름
+      DB_PORT: 5432
+      DB_USER: board_user
+      DB_PASSWORD: board_password
+      DB_NAME: board_db
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+
+  frontend:
+    build: ./frontend
+    container_name: board-frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+volumes:
+  db-data:
