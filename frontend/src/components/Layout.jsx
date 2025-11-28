@@ -1,3 +1,4 @@
+// 페이지 전체 레이아웃
 import React from 'react';
 
 function Layout({ children }) {
@@ -13,7 +14,7 @@ function Layout({ children }) {
         <div className="app-main-inner">{children}</div>
       </main>
       <footer className="app-footer">
-        <span>© 2024 Cloud Native Project</span>
+        <span>© 2025 Cloud Native Project</span>
       </footer>
     </div>
   );

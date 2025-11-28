@@ -1,4 +1,4 @@
-// src/components/PostList.jsx
+// 게시글 목록 카드
 import React from 'react';
 
 function PostList({ posts, onEdit, onDelete }) {

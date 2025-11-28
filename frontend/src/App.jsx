@@ -1,4 +1,4 @@
-// src/App.jsx
+// 메인 화면 로직
 import React, { useState } from 'react';
 import Layout from './components/Layout';
 import PostForm from './components/PostForm';

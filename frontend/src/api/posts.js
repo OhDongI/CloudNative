@@ -1,3 +1,4 @@
+// 백엔드랑 통신
 const API_BASE_URL = 'http://localhost:4000/api';
 
 export async function fetchPosts() {

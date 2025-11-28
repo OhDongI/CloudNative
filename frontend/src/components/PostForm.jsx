@@ -1,4 +1,4 @@
-// src/components/PostForm.jsx
+//글 작성/수정 폼
 import React from 'react';
 
 function PostForm({
