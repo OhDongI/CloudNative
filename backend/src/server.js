@@ -1,4 +1,6 @@
 // 서버 진입점
+import cors from 'cors';
+
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -8,14 +10,9 @@ const postsRouter = require('./posts.routes');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://192.168.56.101:30001',   // K8s 프론트 주소
-];
 
-app.use(cors({
-  origin: allowedOrigins,
-}));
+
+app.use(cors()); 
 app.use(express.json());
 app.use(morgan('dev'));
 
