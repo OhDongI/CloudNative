@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: ohdongi/cloudnative-frontend:latest   # <-- 네 이미지 이름으로 수정
+          image: ohdongi/cloudnative-frontend:1.0
           ports:
             - containerPort: 80

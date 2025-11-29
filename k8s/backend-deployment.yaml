@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ohdongi/cloudnative-backend:latest   # <-- 네 이미지 이름으로 수정
+          image: ohdongi/cloudnative-backend:1.0   
           ports:
             - containerPort: 4000
           env:
