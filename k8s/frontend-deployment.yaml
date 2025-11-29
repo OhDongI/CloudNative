@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: board-frontend
+  namespace: cloudnative
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: board-frontend
+  template:
+    metadata:
+      labels:
+        app: board-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: ohdongi/cloudnative-frontend:latest   # <-- 네 이미지 이름으로 수정
+          ports:
+            - containerPort: 80

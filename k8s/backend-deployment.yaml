@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: board-backend
+  namespace: cloudnative
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: board-backend
+  template:
+    metadata:
+      labels:
+        app: board-backend
+    spec:
+      containers:
+        - name: backend
+          image: ohdongi/cloudnative-backend:latest   # <-- 네 이미지 이름으로 수정
+          ports:
+            - containerPort: 4000
+          env:
+            - name: PORT
+              value: "4000"
+            - name: DB_HOST
+              value: postgres
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USER
+              value: board_user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+            - name: DB_NAME
+              value: board_db
