@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: ohdongi/cloudnative-frontend:1.0
-          imagePullPolicy: Never
+          image: ohdongi/cloudnative-frontend:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80

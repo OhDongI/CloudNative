@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ohdongi/cloudnative-backend:1.0   
-          imagePullPolicy: Never
+          image: ohdongi/cloudnative-backend:latest 
+          imagePullPolicy: Always
           ports:
             - containerPort: 4000
           env:
