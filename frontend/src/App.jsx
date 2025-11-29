@@ -1,36 +1,44 @@
 // 메인 화면 로직
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from './components/Layout';
 import PostForm from './components/PostForm';
 import PostList from './components/PostList';
-// import { fetchPosts, createPost, updatePost, deletePost } from './api/posts';
+import {
+  fetchPosts,
+  createPost,
+  updatePost,
+  deletePost,
+} from './api/posts';
 
 function App() {
-  // 임시 더미 데이터 (백엔드 붙기 전까지 사용)
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      title: '클라우드 네이티브 게시판 프로젝트',
-      content: '이 프로젝트는 Docker, Kubernetes, CI/CD, 모니터링 연습이 목표입니다.',
-      author: '미르',
-      created_at: new Date().toISOString(),
-    },
-    {
-      id: 2,
-      title: '프론트엔드부터 차근차근',
-      content: '먼저 로컬에서 React로 UI를 만들고, 나중에 백엔드와 K8s를 붙입니다.',
-      author: '미르',
-      created_at: new Date().toISOString(),
-    },
-  ]);
-
+  const [posts, setPosts] = useState([]);
   const [form, setForm] = useState({
     title: '',
     content: '',
     author: '',
   });
-
   const [editingPost, setEditingPost] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  // 처음 접속 시 게시글 목록 불러오기
+  useEffect(() => {
+    const load = async () => {
+      try {
+        setInitialLoading(true);
+        setError('');
+        const data = await fetchPosts();
+        setPosts(data);
+      } catch (err) {
+        console.error(err);
+        setError('게시글 목록을 불러오지 못했습니다.');
+      } finally {
+        setInitialLoading(false);
+      }
+    };
+    load();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,40 +53,53 @@ function App() {
     setEditingPost(null);
   };
 
-  const handleCreate = () => {
-    // 나중에 createPost API로 교체 예정
-    const newPost = {
-      id: posts.length === 0 ? 1 : Math.max(...posts.map((p) => p.id)) + 1,
-      title: form.title,
-      content: form.content,
-      author: form.author,
-      created_at: new Date().toISOString(),
-    };
-    setPosts((prev) => [newPost, ...prev]);
-    resetForm();
+  const handleCreate = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const newPost = await createPost(form);
+      // 새 글을 맨 앞에 추가
+      setPosts((prev) => [newPost, ...prev]);
+      resetForm();
+    } catch (err) {
+      console.error(err);
+      setError('게시글 작성 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (!editingPost) return;
-
-    setPosts((prev) =>
-      prev.map((p) =>
-        p.id === editingPost.id
-          ? {
-              ...p,
-              title: form.title,
-              content: form.content,
-              author: form.author,
-            }
-          : p
-      )
-    );
-    resetForm();
+    try {
+      setLoading(true);
+      setError('');
+      const updated = await updatePost(editingPost.id, form);
+      setPosts((prev) =>
+        prev.map((p) => (p.id === updated.id ? updated : p))
+      );
+      resetForm();
+    } catch (err) {
+      console.error(err);
+      setError('게시글 수정 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (!window.confirm('정말 삭제할까요?')) return;
-    setPosts((prev) => prev.filter((p) => p.id !== id));
+    try {
+      setLoading(true);
+      setError('');
+      await deletePost(id);
+      setPosts((prev) => prev.filter((p) => p.id !== id));
+    } catch (err) {
+      console.error(err);
+      setError('게시글 삭제 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const startEdit = (post) => {
@@ -102,24 +123,34 @@ function App() {
 
   return (
     <Layout>
-      <div className="grid">
-        <div className="grid-left">
-          <PostForm
-            mode={isEditMode ? 'edit' : 'create'}
-            form={form}
-            onChange={handleChange}
-            onSubmit={handleSubmit}
-            onCancel={resetForm}
-          />
+      {initialLoading ? (
+        <p>게시글을 불러오는 중...</p>
+      ) : (
+        <div className="grid">
+          <div className="grid-left">
+            {error && (
+              <div style={{ color: 'red', marginBottom: 8 }}>
+                {error}
+              </div>
+            )}
+            <PostForm
+              mode={isEditMode ? 'edit' : 'create'}
+              form={form}
+              onChange={handleChange}
+              onSubmit={handleSubmit}
+              onCancel={resetForm}
+            />
+            {loading && <p style={{ fontSize: 12 }}>요청 처리 중...</p>}
+          </div>
+          <div className="grid-right">
+            <PostList
+              posts={posts}
+              onEdit={startEdit}
+              onDelete={handleDelete}
+            />
+          </div>
         </div>
-        <div className="grid-right">
-          <PostList
-            posts={posts}
-            onEdit={startEdit}
-            onDelete={handleDelete}
-          />
-        </div>
-      </div>
+      )}
     </Layout>
   );
 }
