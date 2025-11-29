@@ -1,10 +1,11 @@
-// 게시글 CRUD 라우터
-const express = require('express');
-const router = express.Router();
-const pool = require('./db');
+// backend/src/posts.routes.js
+import express from 'express';
+import pool from './db.js';
 
-// 모든 게시글 조회
-router.get('/', async (req, res) => {
+const router = express.Router();
+
+// GET /api/posts
+router.get('/posts', async (req, res) => {
   try {
     const result = await pool.query(
       'SELECT * FROM posts ORDER BY created_at DESC'
@@ -16,8 +17,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 단일 게시글 조회
-router.get('/:id', async (req, res) => {
+// GET /api/posts/:id
+router.get('/posts/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const result = await pool.query(
@@ -36,8 +37,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// 게시글 생성
-router.post('/', async (req, res) => {
+// POST /api/posts
+router.post('/posts', async (req, res) => {
   const { title, content, author } = req.body;
 
   if (!title || !content || !author) {
@@ -61,8 +62,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-// 게시글 수정
-router.put('/:id', async (req, res) => {
+// PUT /api/posts/:id
+router.put('/posts/:id', async (req, res) => {
   const { id } = req.params;
   const { title, content, author } = req.body;
 
@@ -89,8 +90,8 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// 게시글 삭제
-router.delete('/:id', async (req, res) => {
+// DELETE /api/posts/:id
+router.delete('/posts/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -110,4 +111,4 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

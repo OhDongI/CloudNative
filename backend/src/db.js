@@ -1,6 +1,7 @@
-// DB 연결
-require('dotenv').config();
-const { Pool } = require('pg');
+// backend/src/db.js
+import pkg from 'pg';
+
+const { Pool } = pkg;
 
 const pool = new Pool({
   host: process.env.DB_HOST,
@@ -10,9 +11,4 @@ const pool = new Pool({
   database: process.env.DB_NAME,
 });
 
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle PostgreSQL client', err);
-  process.exit(-1);
-});
-
-module.exports = pool;
+export default pool;
