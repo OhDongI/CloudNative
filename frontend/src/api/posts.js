@@ -1,5 +1,5 @@
 // 백엔드랑 통신
-const API_BASE_URL = 'http://192.168.56.101:30002/api';
+const API_BASE_URL = 'http://172.16.195.56:30002/api';
 
 export async function fetchPosts() {
   const res = await fetch(`${API_BASE_URL}/posts`);
