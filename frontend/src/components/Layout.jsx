@@ -6,7 +6,7 @@ function Layout({ children }) {
     <div className="app-root">
       <header className="app-header">
         <div className="app-header-inner">
-          <h1 className="app-title">클라우드 게시판</h1>
+          <h1 className="app-title">클라우드 게시판 CI/CD</h1>
           <span className="app-subtitle">Cloud Native Board Project</span>
         </div>
       </header>
